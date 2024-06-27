@@ -24,10 +24,13 @@ export const SearchInput = ({ className }: Props) => {
   });
 
   useDebounce(
-    () => {
-      Api.products.search(searchQuery).then((items) => {
-        setProducts(items);
-      });
+    async () => {
+      try {
+        const res = await Api.products.search(searchQuery);
+        setProducts(res);
+      } catch (error) {
+        console.error(error);
+      }
     },
     300,
     [searchQuery]
