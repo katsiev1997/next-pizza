@@ -8,12 +8,12 @@ type Item = FilterCheckboxProps;
 type Props = {
   title: string;
   items: Item[];
-  defaultItems: Item[];
+  defaultItems?: Item[];
   loading?: boolean;
   searchInputPlaceholder?: string;
   onClickCheckbox?: (id: string) => void;
   defaultValue?: string[];
-  selectedIds?: Set<string>;
+  selectedValues?: Set<string>;
   className?: string;
   name?: string;
 };
@@ -26,7 +26,7 @@ export const CheckBoxFiltersGroup = ({
   onClickCheckbox,
   defaultValue,
   loading,
-  selectedIds,
+  selectedValues,
   className,
   name,
 }: Props) => {
@@ -36,7 +36,7 @@ export const CheckBoxFiltersGroup = ({
     ? items.filter((item) =>
         item.text.toLowerCase().includes(searchValue.toLowerCase())
       )
-    : defaultItems;
+    : defaultItems || items;
   const onChangeSearchInput = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
   };
@@ -70,13 +70,13 @@ export const CheckBoxFiltersGroup = ({
             text={item.text}
             value={item.value}
             endAdornment={item.endAdornment}
-            checked={selectedIds?.has(item.value)}
+            checked={selectedValues?.has(item.value)}
             onCheckedChange={() => onClickCheckbox?.(item.value)}
             name={name}
           />
         ))}
       </div>
-      {items.length > defaultItems?.length && (
+      {defaultItems && items.length > defaultItems?.length && (
         <div className={showAll ? "border-t border-t-neutral-100 mt-4" : ""}>
           <button onClick={() => setShowAll(!showAll)} className="text-primary mt-3">
             {showAll ? "Скрыть" : "Показать все"}
