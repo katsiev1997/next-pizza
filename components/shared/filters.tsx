@@ -1,49 +1,32 @@
 "use client";
 
-import { Title } from "./title";
-import { FilterCheckbox } from "./filter-checkbox";
+import { useFilters, useIngredients, useQueryFilters } from "@/hooks";
 import { Input } from "../ui";
-import { RangeSlider } from "./range-slider";
 import { CheckBoxFiltersGroup } from "./checkbox-filters-group";
-import { useFilterIngredients } from "@/hooks/useFilterIngredients";
-import { useEffect, useState } from "react";
-import { useSet } from "react-use";
+import { RangeSlider } from "./range-slider";
+import { Title } from "./title";
 
 type Props = {
   className?: string;
 };
 
-type PriceProps = {
-  priceFrom: number;
-  priceTo: number;
-};
-
 export const Filters = ({ className }: Props) => {
-  const { ingredients, loading, onAddId, selectedIngredients } = useFilterIngredients();
-  const [sizes, { toggle: toggleSizes }] = useSet(new Set<string>([]));
-  const [pizzaTypes, { toggle: togglePizzaTypes }] = useSet(new Set<string>([]));
-  const [prices, setPrice] = useState<PriceProps>({
-    priceFrom: 0,
-    priceTo: 1000,
-  });
+  const { ingredients, loading } = useIngredients();
+
+  const filters = useFilters();
+
+  useQueryFilters(filters);
+
   const items = ingredients.map((item) => ({
     value: String(item.id),
     text: item.name,
   }));
-  const updatePrice = (name: keyof PriceProps, value: number) => {
-    setPrice({
-      ...prices,
-      [name]: value,
-    });
-  };
-  useEffect(() => {
-    console.log({
-      selectedIngredients,
-      pizzaTypes,
-      sizes,
-      prices,
-    });
-  }, [prices, pizzaTypes, sizes, selectedIngredients]);
+
+  const updatePrices = (prices: number[]) => {
+      filters.setPrices('priceFrom', prices[0] );
+      filters.setPrices('priceTo', prices[1] );
+  }
+
   return (
     <div className={className}>
       <Title text="Фильтрация" size="sm" className="mb-5 font-bold" />
@@ -55,8 +38,8 @@ export const Filters = ({ className }: Props) => {
           { text: "Тонкое", value: "1" },
           { text: "Традиционное", value: "2" },
         ]}
-        selectedValues={pizzaTypes}
-        onClickCheckbox={togglePizzaTypes}
+        selectedValues={filters.pizzaTypes}
+        onClickCheckbox={filters.setPizzaTypes}
         name="sizes"
       />
       <CheckBoxFiltersGroup
@@ -67,8 +50,8 @@ export const Filters = ({ className }: Props) => {
           { text: "30 см", value: "30" },
           { text: "40 см", value: "40" },
         ]}
-        selectedValues={sizes}
-        onClickCheckbox={toggleSizes}
+        selectedValues={filters.sizes}
+        onClickCheckbox={filters.setSizes}
         name="sizes"
       />
       {/* Фильтр цен */}
@@ -80,24 +63,24 @@ export const Filters = ({ className }: Props) => {
             placeholder="0"
             min={0}
             max={1000}
-            value={String(prices.priceFrom)}
-            onChange={(e) => updatePrice("priceFrom", Number(e.target.value))}
+            value={String(filters.prices.priceFrom)}
+            onChange={(e) => filters.setPrices("priceFrom", Number(e.target.value))}
           />
           <Input
             type="number"
             placeholder="1000"
             min={0}
             max={1000}
-            value={String(prices.priceTo)}
-            onChange={(e) => updatePrice("priceTo", Number(e.target.value))}
+            value={String(filters.prices.priceTo)}
+            onChange={(e) => filters.setPrices("priceTo", Number(e.target.value))}
           />
         </div>
         <RangeSlider
           min={0}
           max={1000}
           step={10}
-          value={[prices.priceFrom, prices.priceTo]}
-          onValueChange={([priceFrom, priceTo]) => setPrice({ priceFrom, priceTo })}
+          value={[filters.prices.priceFrom || 0, filters.prices.priceTo || 1000]}
+          onValueChange={updatePrices}
         />
       </div>
       <CheckBoxFiltersGroup
@@ -106,8 +89,8 @@ export const Filters = ({ className }: Props) => {
         defaultItems={items.slice(0, 6)}
         items={items}
         loading={loading}
-        onClickCheckbox={onAddId}
-        selectedValues={selectedIngredients}
+        onClickCheckbox={filters.setIngredients}
+        selectedValues={filters.selectedIngredients}
         name="ingredients"
       />
     </div>
