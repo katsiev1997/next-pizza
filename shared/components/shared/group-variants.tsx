@@ -1,7 +1,6 @@
 "use client";
 
 import { cn } from "@/shared/lib/utils";
-import React from "react";
 
 export type Variant = {
   name: string;
@@ -16,12 +15,7 @@ interface Props {
   className?: string;
 }
 
-export const GroupVariants: React.FC<Props> = ({
-  items,
-  onClick,
-  className,
-  value,
-}) => {
+export const GroupVariants = ({ items, onClick, className, value }: Props) => {
   return (
     <div
       className={cn(

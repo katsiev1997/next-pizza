@@ -9,7 +9,7 @@ interface Props {
   text: string;
 }
 
-export const Title: React.FC<Props> = ({ text, size = "sm", className }) => {
+export const Title = ({ text, size = "sm", className }: Props) => {
   const mapTagBySize = {
     xs: "h5",
     sm: "h4",

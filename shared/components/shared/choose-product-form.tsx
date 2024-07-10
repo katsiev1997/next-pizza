@@ -1,6 +1,5 @@
 import { cn } from "@/shared/lib/utils";
 import React from "react";
-import { ProductImage } from "./pizza-image";
 import { Title } from "./title";
 import { Button } from "../ui";
 import Image from "next/image";

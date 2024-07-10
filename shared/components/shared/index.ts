@@ -10,5 +10,6 @@ export { SearchInput } from "./search-input";
 export { SortPopup } from "./sort-popup";
 export { Title } from "./title";
 export { TopBar } from "./top-bar";
-
+export { CartButton } from "./cart-button";
+export { CartDrawer } from "./cart-drawer";
 export * from "./modals";
