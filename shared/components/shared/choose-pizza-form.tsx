@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  PizzaSize,
-  PizzaType,
-  pizzaTypes
-} from "@/shared/constants/pizza";
+import { PizzaSize, PizzaType, pizzaTypes } from "@/shared/constants/pizza";
 import { usePizzaOptions } from "@/shared/hooks";
 import { getPizzaDetails } from "@/shared/lib/get-pizza-details";
 import { cn } from "@/shared/lib/utils";
@@ -20,16 +16,22 @@ type Props = {
   name: string;
   ingredients: Ingredient[]; // IProduct["ingredients"];
   items: ProductItem[]; // IProduct["items"];
-  onClickAddCart?: VoidFunction;
+  onSubmit: (itemId: number, ingredients: number[]) => void;
   className?: string;
 };
+
+/**
+ * Форма выбора пиццы
+ * @param param0
+ * @returns
+ */
 
 export const ChoosePizzaForm = ({
   imageUrl,
   name,
   ingredients,
   items,
-  onClickAddCart,
+  onSubmit,
   className,
 }: Props) => {
   const {
@@ -37,6 +39,7 @@ export const ChoosePizzaForm = ({
     type,
     selectedIngredients,
     availableSizes,
+    currentItemId,
     setSize,
     setType,
     addIngredient,
@@ -51,12 +54,9 @@ export const ChoosePizzaForm = ({
   );
 
   const handleClickAdd = () => {
-    onClickAddCart?.();
-    console.log({
-      size,
-      type,
-      ingredients: selectedIngredients,
-    });
+    if (currentItemId) {
+      onSubmit(currentItemId, Array.from(selectedIngredients));
+    }
   };
 
   const availablePizzaSizes = items.filter((item) => item.pizzaType === type);
@@ -97,7 +97,7 @@ export const ChoosePizzaForm = ({
             ))}
           </div>
         </div>
-        <Button className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">
+        <Button onClick={handleClickAdd} className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">
           Добавить в корзину за {totalPrice} Р
         </Button>
       </div>

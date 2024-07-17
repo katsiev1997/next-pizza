@@ -55,10 +55,9 @@ export const CartDrawer: FC<PropsWithChildren<Props>> = ({ children }: Props) =>
             </SheetTitle>
           </SheetHeader>
           <div className="-mx-6 mt-5 overflow-auto flex-1">
-            <div className="mb-2">
-              {items.map((item) => (
+            {items.map((item) => (
+              <div key={item.id} className="mb-2">
                 <CartDrawerItem
-                  key={item.id}
                   id={item.id}
                   imageUrl={item.imageUrl}
                   details={
@@ -78,8 +77,8 @@ export const CartDrawer: FC<PropsWithChildren<Props>> = ({ children }: Props) =>
                   }
                   onClickRemoveItem={() => removeCartItem(item.id)}
                 />
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
 
           <SheetFooter className="-mx-6 bg-white p-8">
